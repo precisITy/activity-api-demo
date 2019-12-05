@@ -2,7 +2,7 @@
 
 ## Intro
 
-The REST API is specified using Open API and the service is based on Spring Boot has partially been generated using Swagger. The core class of the REST API is called "ActivityApiController".
+The REST API is specified using Open API and the service is based on Spring Boot. It is partially generated using Swagger. The core class of the REST API is called "ActivityApiController".
 
 The backend operates with a H2 database for storing the data. Note that the data is NOT removed from the database when the service is stopped or restarted. The database is a file saved in a folder called "database" (either created within the project, if executed within the IDE, or next to the JAR).
 
