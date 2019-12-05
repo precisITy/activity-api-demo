@@ -1,0 +1,196 @@
+openapi: 3.0.2
+info:
+  title: Activity API
+  description: REST-API
+  version: "1.0"
+servers:
+  - url: http://localhost:8000
+
+paths:
+
+  "/activity":
+    get:
+      summary: Get all activities
+      operationId: getActivityList
+      tags:
+        - activity
+      parameters:
+        - $ref: "#/components/parameters/author"
+        - $ref: "#/components/parameters/since"
+        - $ref: "#/components/parameters/until"
+        - $ref: "#/components/parameters/keyword"
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Activity"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    post:
+      summary: Adds an activity
+      operationId: addActivity
+      tags:
+        - activity
+      x-codegen-request-body-name: newActivity
+      requestBody:
+        $ref: "#/components/requestBodies/ActivityBody"
+      responses:
+        "201":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Activity"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  "/activity/{id}":
+    parameters:
+      - $ref: "#/components/parameters/id"
+    get:
+      summary: Get a certain activity
+      operationId: getActivity
+      tags:
+        - activity
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Activity"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      summary: Updates a certain, existing activity
+      operationId: updateActivity
+      tags:
+        - activity
+      x-codegen-request-body-name: updatedActivity
+      requestBody:
+        $ref: "#/components/requestBodies/ActivityBody"
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Activity"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      summary: Removes a certain activity
+      operationId: deleteActivity
+      tags:
+        - activity
+      responses:
+        "204":
+          description: No Content
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+components:
+  parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    keyword:
+      name: keyword
+      in: query
+      required: false
+      description: search keyword
+      schema:
+        type: string
+    author:
+      name: author
+      in: query
+      required: false
+      description: author to search for
+      schema:
+        type: string
+    since:
+      name: since
+      in: query
+      required: false
+      description: date (YYYY-MM-DD) for specifying a start date to filter the requested data
+      schema:
+        type: string
+    until:
+      name: until
+      in: query
+      required: false
+      description: date (YYYY-MM-DD) for specifying an end date to filter the requested data
+      schema:
+        type: string
+  requestBodies:
+    ActivityBody:
+      required: true
+      content:
+        "application/json":
+          schema:
+            $ref: "#/components/schemas/Activity"
+  responses:
+    BadRequest:
+      description: Bad Request
+    Unauthorized:
+      description: Unauthorized
+    Forbidden:
+      description: Forbidden
+    NotFound:
+      description: Not Found
+  schemas:
+    Activity:
+      type: object
+      properties:
+        header:
+          type: string
+        name:
+          type: string
+        shortDescription:
+          type: string
+        procurementChannel:
+          type: string
+        dateCreation:
+          type: string
+          format: date-time
+        author:
+          type: string
+        quantity:
+          type: integer
+        price:
+          type: string
+          description: Data type string instead number is used to avoid precision loss and to allow the implementation to use a suitable data type without loss of precision
+        status:
+          type: string
+          enum: [A, B, C]
